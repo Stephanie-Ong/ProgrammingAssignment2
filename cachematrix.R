@@ -3,7 +3,7 @@
 
 ## Write a short comment describing this function
 ## This function consists of 7 functions:-
-		## set() 			 -resets cache value by entering: makeCacheMatrix()$set()
+		## set() 			 -resets cache value by entering the function : makeCacheMatrix()$set()
 		## get() 			 -displays the contents of 'x'
 		## setSqMatrix() 	 -caches input into 'sm'
 		## getSqMatrix() 	 -returns the contents of 'sm' if 'sm' exists
