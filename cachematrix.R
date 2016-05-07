@@ -2,108 +2,145 @@
 ## functions do
 
 ## Write a short comment describing this function
-## This function accepts an input of a square matrix object.
-## If no input is provided, it randomly generates a square matrix object and the elements of the square matrix based on the parameters: 
-		## min_dim - minimum possible dimention of the matrix, eg. 2 x 2
-		## max_dim - maximum possible dimention of the matrix, eg. 10 x 10
-		## min_val - minimum possible value of an element in the square matrix
-		## max_val - maximum possible value of an element in the square matrix
-## The inverse of the matrix is then generated with the solve(x) function and both the matrix & inverse matrix are cached.
-## A status message will be returned after every task.
+## This function consists of 6 functions:-
+		## get() 			 -displays the contents of 'x'
+		## setSqMatrix() 	 -caches input into 'sm'
+		## getSqMatrix() 	 -returns the contents of 'sm' if 'sm' exists
+		## setInverse()		 -caches input into 's'
+		## getInverse() 	 -returns the contents of 's' if 's' exists
+		## compareSqMatrix() -compares newly input Square Matrix with cached Square Matrix. Returns 'TRUE' when it matches and 'FALSE' when it does not match
+		
+## This function serves as an input to cacheSolve(). eg cacheSolve(makeCacheMatrix(matrix(1:4,nrow=2,ncol=2)))
+## If ran on its own, makeCacheMatrix() will return a list of all the 6 functions in the abovementioned.
 
-makeCacheMatrix <- function(x = matrix()) 
-{
-	if(class(x)=='matrix')
-	{
-		if(is.na(x[length(x)]))
-		{
-			min_dim<-2 # minimum possible dimention of the matrix, 2 x 2
-			max_dim<-10 # maximum possible dimention of the matrix, 10 x 10
-			min_val<--100 # minimum possible value of an element in the square matrix
-			max_val<-100 # maximum possible value of an element in the square matrix
-			matrixdim<-round(runif(1,min_dim,max_dim))
-			x<-matrix(round(runif(matrixdim*matrixdim,min_val,max_val)),nrow=matrixdim,ncol=matrixdim)
-			getCacheMatrix<<-x
-			getCacheInverseMatrix<<-solve(x)
-			check<<-1
-			status_msg<<-paste('A ',nrow(x),' x ', ncol(x),' SQUARE MATRIX IS GENERATED, INVERSED & CACHED.', sep='')
-			status_msg
-
-		}
-		else if(nrow(x)!=ncol(x))
-		{
-			check<<-0
-			status_msg<<-paste('INPUT ISN\'T A SQUARE MATRIX. IT IS ',nrow(x),' x ', ncol(x),'.', sep='')
-			status_msg
-		}
-		else
-		{
-			getCacheMatrix<<-x
-			getCacheInverseMatrix<<-solve(x)
-			check<<-1
-			status_msg<<-paste('A ',nrow(x),' x ', ncol(x),' SQUARE MATRIX INPUT IS ACCEPTED, INVERSED & CACHED.', sep='')
-			status_msg
-		}
-	}
-	else
-	{
-		check<<-0
-		status_msg<<-paste('INPUT IS A ',casefold(class(x), upper='TRUE'),'. IF AN INPUT IS NECESSARY, PLEASE USE A SQUARE MATRIX.',sep='')
-		status_msg
-	}
+makeCacheMatrix <- function(x = matrix()) {
+  ##function 1: get() displays the contents of 'x'
+  get <- function() 
+  {
+    x
+  }
+  
+  ##function 2: setSqMatrix() caches input into 'sm'
+  setSqMatrix <- function(SqMatrix) 
+  {
+    sm <<- SqMatrix
+  }
+  
+  ##function 3: getSqMatrix() returns the contents of 'sm' if 'sm' exists
+  getSqMatrix <- function() 
+  {
+    if (exists('sm')) 
+    {
+      sm
+    } 
+    else 
+    {
+      return(NULL)
+    }
+  }
+  
+  
+  ##function 4: setInverse() caches input into 's'
+  setInverse <- function(solve) 
+  {
+    s <<- solve
+  }
+  
+  ##function 5: getInverse() returns the contents of 's' if 's' exists
+  getInverse <- function() 
+  {
+    if (exists('s')) 
+    {
+      s
+    } 
+    else 
+    {
+      return(NULL)
+    }
+  }
+  ##function 6: compareSqMatrix() compares newly input Square Matrix with cached Square Matrix. Returns 'TRUE' when it matches and 'FALSE' when it does not match
+  compareSqMatrix <- function(newSqMatrix,cachedSqMatrix)
+  {
+    if((nrow(cachedSqMatrix)==nrow(newSqMatrix))&&(ncol(cachedSqMatrix)==ncol(newSqMatrix))) ## compares the dimensions of the input and cache matrix. Run if match
+    {
+      if(is.na(table(sapply(1:ncol(newSqMatrix),function(n){newSqMatrix[n,]==cachedSqMatrix[n,]}))["TRUE"]))
+      { 
+        ## returns false when new Square Matrix does not match cached Square Matrix
+        FALSE
+      }
+      else if(table(sapply(1:ncol(newSqMatrix),function(n){newSqMatrix[n,]==cachedSqMatrix[n,]}))["TRUE"] ==length(newSqMatrix)) ## compares the elements in the input and cache matrix. Run if match
+      {	
+        ## returns true when new Square Matrix matches cached Square Matrix
+        TRUE
+      }
+      else 
+      {
+        ## returns false when new Square Matrix does not match cached Square Matrix
+        FALSE
+      }
+    }
+    else
+    {
+      ## returns false when new Square Matrix does not matchcached Square Matrix
+      FALSE
+    }
+    
+  }
+  
+  # displays all the functions 1 to 6 in a list
+  list(get = get,
+       setSqMatrix = setSqMatrix,
+       getSqMatrix = getSqMatrix,
+       compareSqMatrix = compareSqMatrix,
+       setInverse = setInverse,
+       getInverse = getInverse)
 }
 
-
-
 ## Write a short comment describing this function
-## This function accepts an input of a square matrix object.
-## If the input is similar to the matrix generated by makeCacheMatrix()
-## and if the inverse has already been calculated, then cacheSolve() will retrieve the inverse from the cache.
-## If the square matrix has changed, cacheSolve() will calculate the inverse of the matrix.
-## The inverse matrix will be returned.
-## Enter S.2 to display the trigger points of cacheSolve()
+## This function must have the makeCacheMatrix() function with a square matrix as an input. eg cacheSolve(makeCacheMatrix(matrix(1:4,nrow=2,ncol=2)))
+## It calls on the various functions that are available in cacheSolve() to do the following:
+		##1- retrieves the cached inverse matrix
+		##2- retrieves the new square matrix
+		##3- if 'cached inverse matrix' exists, it compares the 'new square matrix' against the 'cached square matrix'
+		##4- if 'cached inverse matrix' does not exist, it sets 'getCache' flag to FALSE
+		##5- if the 'new square matrix' matches the 'cached square matrix', it sets 'getCache' flag to TRUE
+		##6- Returns a list that displays the process type & the cached values depending on the 'getCache' flag
+		##7- The 2 possible process types are: "getting cached data ... " and "calculating inverse matrix ... "
+## This function will only work with square matrices
+## There is no exception handling for the input of classes other than those specified.
+		
+
 
 cacheSolve <- function(x, ...) 
 {
-	check<<-0
-	S.1<<-NULL
-	S.2<<-NULL
-	if(exists('getCacheMatrix')&&class(x)=='matrix')
-	{
-		if((nrow(x)==nrow(getCacheMatrix))&&(ncol(x)==ncol(getCacheMatrix)))
-		{
-			if(table(sapply(1:ncol(getCacheMatrix),function(n){getCacheMatrix[n,]==x[n,]}))["TRUE"]==length(getCacheMatrix))
-			{	
-				## Return a matrix that is the inverse of 'x'
-				check<<-1
-				S.1<<-paste('1:INVERSE MATRIX RETRIEVED FROM CACHE')
-			}
-			else 
-			{
-				makeCacheMatrix(x)
-				S.1<<-paste('2:INPUT NOT FOUND IN CACHE. makeCacheMatrix CALLED. ',status_msg,sep='')
-			}
-		}
-		else
-		{
-			makeCacheMatrix(x)
-			S.1<<-paste('3:INPUT NOT FOUND IN CACHE. makeCacheMatrix CALLED. ',status_msg,sep='')
-		}
-	}
-	else 
-	{
-		makeCacheMatrix(x)
-		S.1<<-paste('4:INPUT NOT FOUND IN CACHE. makeCacheMatrix CALLED. ',status_msg,sep='')
-	}
-
-	if(check==1)
-	{
-		S.2<<-S.1
-		getCacheInverseMatrix
-	}
-	else
-	{
-		S.2<<-S.1
-		status_msg
-	}
-}
+  s1 <- x$getInverse()  
+  data <- x$get() ## passes the input attribute into 'data'
+  if(!is.null(s1)) ## checks for cached inversed matrix. run if it exists
+  {
+    SqMatrix <- x$getSqMatrix() ## retrieves cached matrix of the inverse into 'SqMatrix'
+    if(x$compareSqMatrix(data,SqMatrix)=='TRUE')
+    {
+      getCache <- TRUE ## getCache flag set to TRUE
+    }
+    else
+    {
+      getCache <- FALSE ## getCache flag set to FALSE
+    }  
+    
+  }
+  else
+  {
+    getCache <- FALSE ## getCache flag set to FALSE
+  } 
+  if (getCache == TRUE)
+  {
+    list(Process=paste("getting cached data ... "),Square.Matrix=sm,Inverse.Matrix=s)
+  }
+  else
+  {
+    x$setInverse(solve(data, ...)) ## cache new inverse matrix into 's'
+    x$setSqMatrix(data) ## cache new matrix into 'sm'
+    list(paste("calculating inverse matrix ... "),Square.Matrix=sm,Inverse.Matrix=s)
+  }
+  
+} 
