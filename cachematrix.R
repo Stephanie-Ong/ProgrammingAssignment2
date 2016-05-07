@@ -2,7 +2,8 @@
 ## functions do
 
 ## Write a short comment describing this function
-## This function consists of 6 functions:-
+## This function consists of 7 functions:-
+		## set() 			 -resets cache value by entering: makeCacheMatrix()$set()
 		## get() 			 -displays the contents of 'x'
 		## setSqMatrix() 	 -caches input into 'sm'
 		## getSqMatrix() 	 -returns the contents of 'sm' if 'sm' exists
@@ -14,6 +15,13 @@
 ## If ran on its own, makeCacheMatrix() will return a list of all the 6 functions in the abovementioned.
 
 makeCacheMatrix <- function(x = matrix()) {
+  ##function 0: set() resets cache value by with makeCacheMatrix()$set()
+  set <- function(y= matrix()) {
+    x <<- y
+    s <<- NULL
+    sm <<-NULL
+  }
+  
   ##function 1: get() displays the contents of 'x'
   get <- function() 
   {
@@ -40,7 +48,7 @@ makeCacheMatrix <- function(x = matrix()) {
   }
   
   
-  ##function 4: setInverse() caches input into 's'
+  ##function 4: setInverse caches input into 's'
   setInverse <- function(solve) 
   {
     s <<- solve
@@ -87,14 +95,19 @@ makeCacheMatrix <- function(x = matrix()) {
     
   }
   
-  # displays all the functions 1 to 6 in a list
-  list(get = get,
+  # displays all the functions 0 to 6 in a list
+  list(set = set,
+       get = get,
        setSqMatrix = setSqMatrix,
        getSqMatrix = getSqMatrix,
        compareSqMatrix = compareSqMatrix,
        setInverse = setInverse,
        getInverse = getInverse)
 }
+
+
+
+
 
 ## Write a short comment describing this function
 ## This function must have the makeCacheMatrix() function with a square matrix as an input. eg cacheSolve(makeCacheMatrix(matrix(1:4,nrow=2,ncol=2)))
